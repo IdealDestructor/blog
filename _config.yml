@@ -46,6 +46,6 @@ theme: icarus
 deploy:
   type: git
   repo: "git@github.com:IdealDestructor/blog.git"
-  branch: gh-page
+  branch: main
 encrypt:
   enable: true

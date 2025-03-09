@@ -1,6 +1,7 @@
-
 name: Hexo Auto-Deploy
-on: [push]
+on:
+  push:
+    branches: [main] # 指定触发分支，根据你的源码分支调整
 
 jobs:
   build:
@@ -8,31 +9,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 1. git checkout...
-      uses: actions/checkout@v1
-      
-    - name: 2. setup nodejs...
-      uses: actions/setup-node@v1
-    
-    - name: 3. install hexo...
-      run: |
-        npm install hexo-cli -g
-        npm install
-        
-    - name: 4. hexo generate public files...
-      run: |
-        hexo clean
-        hexo g  
+      - name: 1. Checkout source code
+        uses: actions/checkout@v3 # 使用最新版本
 
-    - name: 5. hexo deploy ...
-      run: |
-        mkdir -p ~/.ssh/
-        echo "${{ secrets.ACTIONKEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        
-        git config --global user.name "IdealDestructor"
-        git config --global user.email "wdqjj@qq.com"
-        git config --global core.quotepath false
-        
-        hexo d
+      - name: 2. Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x" # 指定Node.js版本，推荐LTS版本
+
+      - name: 3. Cache node_modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+
+      - name: 4. Install dependencies
+        run: |
+          npm install -g hexo-cli
+          npm ci  # 更可靠的依赖安装
+
+      - name: 5. Check hexo-deployer-git
+        run: npm list hexo-deployer-git || npm install hexo-deployer-git --save
+
+      - name: 6. Generate public files
+        run: |
+          hexo clean
+          hexo generate
+
+      - name: 7. Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.ACTIONKEY }}" | tr -d '\r' > ~/.ssh/id_rsa  # 避免换行问题
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: 8. Deploy to GitHub
+        run: |
+          git config --global user.name "IdealDestructor"
+          git config --global user.email "wdqjj@qq.com"
+          hexo deploy
