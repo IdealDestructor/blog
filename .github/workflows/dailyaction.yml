@@ -43,7 +43,7 @@ jobs:
       - name: 7. Setup SSH
         run: |
           mkdir -p ~/.ssh/
-          echo "${{ secrets.ACTIONKEY }}" | tr -d '\r' > ~/.ssh/id_rsa  # 避免换行问题
+          echo "${{ secrets.ACTIONKEY }}" > ~/.ssh/id_rsa  # 删除 tr -d '\r' 避免破坏格式
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
