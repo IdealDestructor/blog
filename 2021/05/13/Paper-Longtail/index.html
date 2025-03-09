@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Long-Tailed Classification by Keeping the Good and Removing the Bad Momentum Causal Effect NIPS，2020 - Tender is the night.</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Tender is the night."><meta name="msapplication-TileImage" content="/img/francis.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Tender is the night."><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="背景和动机 在传统的长尾分布处理方法中，普遍使用的重采样、重加权等re-balancing办法可能导致对头部类欠拟合且对尾部类过拟合，从而产生shortcut。而Decoupling为代表的二阶段训练方法则不太符合深度学习端到端的理念。  $$ v_{t}&amp;#x3D;\underbrace{\mu \cdot v_{t-1}}_{\text {momentum }}+g_{t}, \quad \theta_"><meta property="og:type" content="blog"><meta property="og:title" content="Long-Tailed Classification by Keeping the Good and Removing the Bad Momentum Causal Effect NIPS，2020"><meta property="og:url" content="https://blog.deqiang.wang/2021/05/13/Paper-Longtail/"><meta property="og:site_name" content="Tender is the night."><meta property="og:description" content="背景和动机 在传统的长尾分布处理方法中，普遍使用的重采样、重加权等re-balancing办法可能导致对头部类欠拟合且对尾部类过拟合，从而产生shortcut。而Decoupling为代表的二阶段训练方法则不太符合深度学习端到端的理念。  $$ v_{t}&amp;#x3D;\underbrace{\mu \cdot v_{t-1}}_{\text {momentum }}+g_{t}, \quad \theta_"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://pic3.zhimg.com/80/v2-3c2009cd25376e7bd63b40cee7aa3de6_1440w.jpg"><meta property="og:image" content="https://pic4.zhimg.com/80/v2-50bf08ae63c68a6794cad924396547fb_1440w.jpg"><meta property="og:image" content="https://pic1.zhimg.com/80/v2-aeb0b5c18e021b302263ffd7e49587c4_1440w.jpg"><meta property="og:image" content="https://pic4.zhimg.com/80/v2-dd61188a776237d5366c1ec8a27d733b_1440w.jpg"><meta property="og:image" content="https://pic2.zhimg.com/80/v2-b21ee69bfbb1b1b68b1d6dda1ecf25ad_1440w.jpg"><meta property="og:image" content="https://pic3.zhimg.com/80/v2-e4bd51fd767952c91f5a85f8eab91352_1440w.jpg"><meta property="og:image" content="https://pic2.zhimg.com/80/v2-28e5f7c98a98e01782695b3c4c62bd3d_1440w.jpg"><meta property="article:published_time" content="2021-05-13T14:22:35.000Z"><meta property="article:modified_time" content="2025-03-09T17:42:10.902Z"><meta property="article:author" content="Francis"><meta property="article:tag" content="深度学习"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://pic3.zhimg.com/80/v2-3c2009cd25376e7bd63b40cee7aa3de6_1440w.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.deqiang.wang/2021/05/13/Paper-Longtail/"},"headline":"Long-Tailed Classification by Keeping the Good and Removing the Bad Momentum Causal Effect NIPS，2020","image":["https://pic3.zhimg.com/80/v2-3c2009cd25376e7bd63b40cee7aa3de6_1440w.jpg","https://pic4.zhimg.com/80/v2-50bf08ae63c68a6794cad924396547fb_1440w.jpg","https://pic1.zhimg.com/80/v2-aeb0b5c18e021b302263ffd7e49587c4_1440w.jpg","https://pic4.zhimg.com/80/v2-dd61188a776237d5366c1ec8a27d733b_1440w.jpg","https://pic2.zhimg.com/80/v2-b21ee69bfbb1b1b68b1d6dda1ecf25ad_1440w.jpg","https://pic3.zhimg.com/80/v2-e4bd51fd767952c91f5a85f8eab91352_1440w.jpg","https://pic2.zhimg.com/80/v2-28e5f7c98a98e01782695b3c4c62bd3d_1440w.jpg"],"datePublished":"2021-05-13T14:22:35.000Z","dateModified":"2025-03-09T17:42:10.902Z","author":{"@type":"Person","name":"Francis"},"description":"背景和动机 在传统的长尾分布处理方法中，普遍使用的重采样、重加权等re-balancing办法可能导致对头部类欠拟合且对尾部类过拟合，从而产生shortcut。而Decoupling为代表的二阶段训练方法则不太符合深度学习端到端的理念。  $$ v_{t}&#x3D;\\underbrace{\\mu \\cdot v_{t-1}}_{\\text {momentum }}+g_{t}, \\quad \\theta_"}</script><link rel="canonical" href="https://blog.deqiang.wang/2021/05/13/Paper-Longtail/"><link rel="icon" href="/img/francis.ico"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?330fdb4750eb9751bd56abdec3e28579";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-161981280-1" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-161981280-1');</script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-1-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logofrancis.png" alt="Tender is the night." height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-12"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-13T14:22:35.000Z" title="5/13/2021, 2:22:35 PM">2021-05-13</time>发表</span><span class="level-item"><time dateTime="2025-03-09T17:42:10.902Z" title="3/9/2025, 5:42:10 PM">2025-03-09</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></span><span class="level-item">7 分钟读完 (大约1014个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Long-Tailed Classification by Keeping the Good and Removing the Bad Momentum Causal Effect NIPS，2020</h1><div class="content"><h3 id="背景和动机"><a href="#背景和动机" class="headerlink" title="背景和动机"></a>背景和动机</h3><p><img src="https://pic3.zhimg.com/80/v2-3c2009cd25376e7bd63b40cee7aa3de6_1440w.jpg" alt=""></p>
+<p>在传统的长尾分布处理方法中，普遍使用的重采样、重加权等re-balancing办法可能导致对头部类欠拟合且对尾部类过拟合，从而产生shortcut。而Decoupling为代表的二阶段训练方法则不太符合深度学习端到端的理念。</p>
+<div>
+$$
+v_{t}=\underbrace{\mu \cdot v_{t-1}}_{\text {momentum }}+g_{t}, \quad \theta_{t}=\theta_{t-1}-l r \cdot v_{t},
+$$
+</div>
+通过分析优化器的动量项可能在训练数据时引入数据分布，于是试图通过因果分析去改进动量项，得出一种通用且有一定可解释性的长尾问题解决方法。
+
+<span id="more"></span>
+
+<h3 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h3><ol>
+<li>multi-head normalized classifier <div>
+$$
+Y_{i}=\frac{\tau}{K} \sum_{k=1}^{K}+\frac{\left(w_{i}^{k}\right)^{T} x^{k}}{\left(\left\|w_{i}^{k}\right\|+\gamma\right)\left\|x^{k}\right\|}
+$$
+</div>
+其中<div>$$
+\tau, \gamma
+$$</div>是超参，K是multi-head的数量
+
+</li>
+</ol>
+<p>2.统计一个移动平均特征<div>$$<br>\bar{x}<br>$$</div>，并将他的单位方向看作是特征对头部类的倾向方向<div>$$<br>\hat{d}=\bar{x} /|\bar{x}|$$</div><br>3.从training的logits中剔除代表对头部类过度倾向的部分，即测试时改用如下公式计算TDE logits：</p>
+<div>$$
+\operatorname{TDE}\left(Y_{i}\right)=\frac{\tau}{K} \sum_{k=1}^{K}\left(\frac{\left(w_{i}^{k}\right)^{T} x^{k}}{\left(\left\|w_{i}^{k}\right\|+\gamma\right)\left\|x^{k}\right\|}-\alpha \cdot \frac{\cos \left(x^{k}, \hat{d}^{k}\right) \cdot\left(w_{i}^{k}\right)^{T} \hat{d}^{k}}{\left\|w_{i}^{k}\right\|+\gamma}\right)
+$$</div>
+4.对background类做特殊处理
+<div>$$
+\underset{i \in C}{\arg \max }\left\{\begin{array}{ll}
+\left(1-p_{0}\right) \cdot \frac{q_{i}}{1-q_{0}} & i \neq 0 \\
+p_{0} & i=0
+\end{array}\right.
+$$</div>
+​        background类是一个头部大类，我们可以依赖对background的bias来倚除大量琐碎的细节。公式中i=0代表background类, $\quad p_{i}$ 是利用原始 training的logits计算出的probability, $q_{i}$ 是利用TDE logits计算出的softmax后的概率。
+
+<h3 id="理论依据"><a href="#理论依据" class="headerlink" title="理论依据"></a>理论依据</h3><p>1.因果图<br><img src="https://pic4.zhimg.com/80/v2-50bf08ae63c68a6794cad924396547fb_1440w.jpg" alt="img"></p>
+<p>通常意义上，在因果推断理论中，M是对推断X-&gt;Y的混淆因子，D则是中介因子，它们都有可能对推理的正确性产生影响。</p>
+<p>而在当前的问题中，M就是优化器的动量，X是backbone提取的核心特征，Y是预测。D是特征对头部大类的偏移量。</p>
+<p>2.De-confound-TDE</p>
+<p><img src="https://pic1.zhimg.com/80/v2-aeb0b5c18e021b302263ffd7e49587c4_1440w.jpg" alt="img"></p>
+<p>（1）使用De-confound training在训练中控制M对X的影响，但是因为无法统计M的真实分布，通过multi-head多重采样来近似。</p>
+<p>（2）把原始的logits当成是X对Y的因果效应，根据propensity score（排除协变量的影响）思想，应该对大类和小类等所有类做归一化统一分布，将其实现为一种logits的normalization，其中包含类别相关与类别不相关两个normalization项。</p>
+<p>（3）counterfactual inference做减法，通过安慰剂对照组，去除了间接效应。</p>
+<p>3.不同策略分类效果对比</p>
+<p><img src="https://pic4.zhimg.com/80/v2-dd61188a776237d5366c1ec8a27d733b_1440w.jpg" alt="img"></p>
+<p>根据预测分布，可以看出直接训练和one-stage的re-balancing都有严重的问题，而two-stage的方法通过再训练去矫正分类边界。TDE方法则直接矫正特征本身的分布，从而解决长尾问题。</p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p>1.在mageNet-LT和Long-tailed CIFAR-10/-100上的表现</p>
+<p><img src="https://pic2.zhimg.com/80/v2-b21ee69bfbb1b1b68b1d6dda1ecf25ad_1440w.jpg" alt="img"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-e4bd51fd767952c91f5a85f8eab91352_1440w.jpg" alt="img"></p>
+<p>可以看出TDE方法在长尾数据集上表现较以往的算法有明显提升。</p>
+<p>2.feature map可视化</p>
+<p><img src="https://pic2.zhimg.com/80/v2-28e5f7c98a98e01782695b3c4c62bd3d_1440w.jpg" alt="img"></p>
+<p>发现De-confound-TDE使得feature map更加关注高区分度的特征。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Long-Tailed Classification by Keeping the Good and Removing the Bad Momentum Causal Effect NIPS，2020</p><p><a href="https://blog.deqiang.wang/2021/05/13/Paper-Longtail/">https://blog.deqiang.wang/2021/05/13/Paper-Longtail/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Francis</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-05-13</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-03-09</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a class="icon" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a><a class="icon" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=5e7cd1515b1431001927bbd8&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/img/alipay.png" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/weixinpay.png" alt="微信"></span></a><a class="button donate" href="https://www.buymeacoffee.com/NRy52OH" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>送我杯咖啡</span></a><a class="button donate" data-type="paypal" onclick="document.getElementById(&#039;paypal-donate-form&#039;).submit()"><span class="icon is-small"><i class="fab fa-paypal"></i></span><span>Paypal</span></a><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" rel="noopener" id="paypal-donate-form"><input type="hidden" name="cmd" value="_donations"><input type="hidden" name="business" value="idealdestructor@gmail.com"><input type="hidden" name="currency_code" value="USD"></form></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/05/15/Conference-%E5%BF%AB%E6%89%8B%E6%8A%80%E6%9C%AF%E5%98%89%E5%B9%B4%E5%8D%8E/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">快手技术嘉年华</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/05/13/Paper-Attention/"><span class="level-item">Recurrent Models of Visual Attention</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="content" id="valine-thread"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script><script>new Valine({
+            el: '#valine-thread' ,
+            appId: "Df8zpeaXIjXp13rliBbmXmbi-gzGzoHsz",
+            appKey: "pnd6tjS2MVYnYeacKIhQFINI",
+            
+            avatar: "robohash",
+            
+            meta: ["nick","mail","link"],
+            pageSize: 10,
+            lang: "zh-CN",
+            
+            highlight: true,
+            
+            
+            
+            
+            
+            requiredFields: [],
+        });</script></div></div></div><!--!--><!--!--></div></div></section><footer class="footer"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css" integrity="sha512-CIYsJUa3pr1eoXlZFroEI0mq0UIMUqNouNinjpCkSWo3Bx5NRlQ0OuC6DtEB/bDqUWnzXc1gs2X/g52l36N5iw==" crossorigin="anonymous" referrerpolicy="no-referrer"><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logofrancis.png" alt="Tender is the night." height="28"></a><p class="is-size-7"><span>&copy; 2025 Francis</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div id="aplayer"></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="LeetCode" href="https://leetcode-cn.com/u/idealdestructor/"><i class="fas fa-terminal"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Scholar" href="https://scholar.google.com/citations?hl=zh-CN&amp;view_op=list_works&amp;gmla=AJsN-F5BJwq0y_k5LvIAnx2w8-J7gQF5XRICqZuNECnwqg8hFisRyGzQ-iCt0Uw0Xbt9hCGedhwcIc_r4BElnmfIs-HBrrA5mzXJblpTXOVNeNsJtzencFk&amp;user=Ykem_e8AAAAJ"><i class="fas fa-graduation-cap"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/idealdestructor"><i class="fab fa-github"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Email" href="mailto:hi@mail.deqiang.wang"><i class="fa fa-envelope"></i></a></p></div></div></div></div><script src="https://oss.deqiang.wang/music/aplayer.js"></script></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.js" defer></script><script>window.addEventListener("load", function() {
+            document.querySelectorAll('[role="article"] > .content').forEach(function(element) {
+                renderMathInElement(element);
+            });
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
